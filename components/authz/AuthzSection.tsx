@@ -39,11 +39,11 @@ export const AuthzSection = ({ chainName }: { chainName: ChainName }) => {
         <Tabs
           tabs={[
             {
-              label: 'Grants to me',
+              label: 'Master(grants to me)',
               content: null,
             },
             {
-              label: 'Grants by me',
+              label: 'Slave(grants by me)',
               content: null,
             },
           ]}
@@ -51,9 +51,9 @@ export const AuthzSection = ({ chainName }: { chainName: ChainName }) => {
           onActiveTabChange={(tabId) => setActiveTab(tabId)}
           attributes={{ width: '$min' }}
         />
-        <Button intent="tertiary" onClick={() => setIsOpen(true)}>
+        {activeTab === 1 && <Button intent="tertiary" onClick={() => setIsOpen(true)}>
           Create Grant
-        </Button>
+        </Button>}
       </Box>
 
       <Grants
