@@ -107,7 +107,7 @@ export const GrantCard = ({
           id="address"
           label={isGranter ? 'Grantee' : 'Granter'}
           value={address}
-          inputClassName={styles.customInput}
+          // inputClassName={styles.customInput}
         />
         <Box position="absolute" bottom="$2" right="$2">
           <IconButton
