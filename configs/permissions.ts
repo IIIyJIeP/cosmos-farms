@@ -3,6 +3,7 @@ export const Permission = {
   Send: 'send',
   Delegate: 'delegate',
   ClaimRewards: 'claim-rewards',
+  Default: 'default',
 } as const;
 
 export type PermissionId = typeof Permission[keyof typeof Permission];
@@ -14,6 +15,11 @@ export type PermissionItem = {
 };
 
 export const permissions: PermissionItem[] = [
+  {
+    id: Permission.Default,
+    name: 'Default (Claim Rewards + Send)',
+    isCustomizable: true,
+  },
   {
     id: Permission.Vote,
     name: 'Vote',

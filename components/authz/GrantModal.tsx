@@ -53,9 +53,9 @@ export const GrantModal = ({ isOpen, onClose, chainName }: GrantModalProps) => {
 
   const [granteeAddress, setGranteeAddress] = useState('');
   const [addressErrorMsg, setAddressErrorMsg] = useState('');
-  const [expiryDate, setExpiryDate] = useState<Date | null>(null);
+  const [expiryDate, setExpiryDate] = useState<Date | null>(new Date(new Date().setFullYear(new Date().getFullYear()+1)));
   const [selectedPermission, setSelectedPermission] =
-    useState<PermissionItem | null>(null);
+    useState<PermissionItem | null>(permissions[0]);
 
   const [sendLimit, setSendLimit] = useState<number | undefined>(undefined);
   const [delegateLimit, setDelegateLimit] = useState<number | undefined>(
@@ -78,8 +78,8 @@ export const GrantModal = ({ isOpen, onClose, chainName }: GrantModalProps) => {
 
   const onModalClose = () => {
     setGranteeAddress('');
-    setExpiryDate(null);
-    setSelectedPermission(null);
+    setExpiryDate(new Date(new Date().setFullYear(new Date().getFullYear()+1)));
+    setSelectedPermission(permissions[0]);
     setSendLimit(undefined);
     setDelegateLimit(undefined);
     setIsGranting(false);
@@ -121,15 +121,19 @@ export const GrantModal = ({ isOpen, onClose, chainName }: GrantModalProps) => {
       'claim-rewards': { grantType: 'claim-rewards' },
     };
 
-    const msg = createGrantMsg({
+    const permissionIds: PermissionId[] = selectedPermission.id === 'default'
+      ? ['send', 'claim-rewards'] 
+    : [selectedPermission.id]
+
+    const msgs = permissionIds.map((pId) => createGrantMsg({
       grantee: granteeAddress,
       granter: address,
       expiration: expiryDate,
-      ...grantMsg[selectedPermission.id],
-    });
+      ...grantMsg[pId],
+    }));
 
     authzTx({
-      msgs: [msg],
+      msgs,
       onSuccess: () => {
         refetch();
         onModalClose();
@@ -200,9 +204,9 @@ export const GrantModal = ({ isOpen, onClose, chainName }: GrantModalProps) => {
               </PopoverContent>
             </Popover>
 
-            {selectedPermission?.id === 'send' && (
+            {(selectedPermission?.id === 'default' || selectedPermission?.id === 'send') && (
               <CustomizationField
-                permissionType={selectedPermission.id}
+                permissionType='send'
                 value={sendLimit}
                 onChange={(val) => {
                   if (!val) {

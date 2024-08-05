@@ -66,8 +66,8 @@ function CreateCosmosApp({ Component, pageProps }: AppProps) {
             projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
             relayUrl: 'wss://relay.walletconnect.org',
             metadata: {
-              name: 'Cosmos Kit dApp',
-              description: 'Cosmos Kit dApp built by Create Cosmos App',
+              name: 'Cosmos Farms dApp',
+              description: 'Cosmos Farms dApp built by Create Cosmos App',
               url: 'https://docs.cosmology.zone/cosmos-kit/',
               icons: [],
             },
