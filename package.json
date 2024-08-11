@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "next start",
     "dev": "next dev",
     "build": "yarn build:tsc && next build",
     "build:tsc": "yarn tsc -p tsconfig.json --outDir main --module commonjs",
@@ -55,7 +56,8 @@
     "react-calendar": "4.8.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
-    "react-markdown": "9.0.1"
+    "react-markdown": "9.0.1",
+    "sharp": "^0.33.4"
   },
   "devDependencies": {
     "@confio/relayer": "0.7.0",

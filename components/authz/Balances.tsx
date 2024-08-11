@@ -25,7 +25,7 @@ const Balances = (props: BalancesProps) => {
                     Staked:
                 </Text>
                 <Text
-                    fontSize="$sm"
+                    fontSize="$md"
                     fontWeight="$semibold"
                     lineHeight="$normal"
                 >
@@ -43,7 +43,7 @@ const Balances = (props: BalancesProps) => {
                     Claimable Rewards:
                 </Text>
                 <Text
-                    fontSize="$sm"
+                    fontSize="$md"
                     fontWeight="$semibold"
                     lineHeight="$normal"
                 >
@@ -61,7 +61,7 @@ const Balances = (props: BalancesProps) => {
                     Available:
                 </Text>
                 <Text
-                    fontSize="$sm"
+                    fontSize="$md"
                     fontWeight="$semibold"
                     lineHeight="$normal"
                 >
