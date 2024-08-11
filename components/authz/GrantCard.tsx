@@ -1,5 +1,4 @@
 // TODO fix type issues
-// @ts-nocheck
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -24,6 +23,7 @@ import { useAuthzTx, useGrants } from '@/hooks';
 import { getCoin, permissionNameToRouteMap } from '@/configs';
 
 import styles from '@/styles/custom.module.css';
+import Balances from './Balances';
 
 type GrantCardProps = {
   role: 'granter' | 'grantee';
@@ -101,13 +101,15 @@ export const GrantCard = ({
           {chain.pretty_name}
         </Text>
       </Stack>
+      
+      {!isGranter && <Balances chainName={chainName} address={grant.address} />}
 
       <Box position="relative" mb="$10">
         <TextField
           id="address"
           label={isGranter ? 'Grantee' : 'Granter'}
           value={address}
-          // inputClassName={styles.customInput}
+        // inputClassName={styles.customInput}
         />
         <Box position="absolute" bottom="$2" right="$2">
           <IconButton
@@ -158,6 +160,7 @@ export const GrantCard = ({
             </Button>
           ) : permissionNameToRouteMap[permission.name] ? (
             <Link
+              key={permission.name}
               href={permissionNameToRouteMap[permission.name]}
               style={{ textDecoration: 'none' }}
             >

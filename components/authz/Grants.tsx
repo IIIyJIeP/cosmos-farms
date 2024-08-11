@@ -20,8 +20,9 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
   const { data, isLoading, isError } = useGrants(chainName);
 
   const isGranter = role === 'granter';
+  
   const grants = isGranter ? data?.granterGrants : data?.granteeGrants;
-
+  
   const renderContent = () => {
     if (isError) {
       return (

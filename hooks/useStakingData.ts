@@ -21,10 +21,10 @@ import { useQueryHooks } from './useQueryHooks';
   return this.toString();
 };
 
-export const useStakingData = (chainName: string) => {
+export const useStakingData = (chainName: string, stakingAddress?: string) => {
   const { permission } = useAuthzContext();
 
-  const address = permission?.granter;
+  const address = stakingAddress || permission?.granter;
 
   const coin = getCoin(chainName);
   const exp = getExponent(chainName);
