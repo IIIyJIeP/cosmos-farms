@@ -2,15 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
-import {
-  Box,
-  Button,
-  IconButton,
-  Stack,
-  Text,
-  TextField,
-} from '@interchain-ui/react';
+import { Dispatch, useState } from 'react';
+import { Box, Button, IconButton, Stack, Text, TextField } from '@interchain-ui/react';
 import { useChain } from '@cosmos-kit/react';
 
 import {
@@ -19,7 +12,7 @@ import {
   PrettyPermission,
 } from '@/utils';
 import { useAuthzContext } from '@/context';
-import { useAuthzTx, useGrants } from '@/hooks';
+import { GranterBalancesAction, useAuthzTx, useGrants } from '@/hooks';
 import { getCoin, permissionNameToRouteMap } from '@/configs';
 
 import styles from '@/styles/custom.module.css';
@@ -30,6 +23,7 @@ type GrantCardProps = {
   grant: PrettyGrant;
   chainName: string;
   onViewDetails: () => void;
+  dispatchGrantersBalances: Dispatch<GranterBalancesAction>
 };
 
 export const GrantCard = ({
@@ -37,6 +31,7 @@ export const GrantCard = ({
   grant,
   chainName,
   onViewDetails,
+  dispatchGrantersBalances
 }: GrantCardProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isRevoking, setIsRevoking] = useState(false);
@@ -102,7 +97,7 @@ export const GrantCard = ({
         </Text>
       </Stack>
       
-      {!isGranter && <Balances chainName={chainName} address={grant.address} />}
+      {!isGranter && <Balances dispatchGrantersBalances={dispatchGrantersBalances} chainName={chainName} address={grant.address} />}
 
       <Box position="relative" mb="$10">
         <TextField

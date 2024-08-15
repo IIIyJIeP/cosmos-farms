@@ -1,15 +1,28 @@
-import React from "react";
+import React, { Dispatch, useEffect } from "react";
 import { Stack, Text } from '@interchain-ui/react'
-import { useStakingData } from "@/hooks";
+import { GranterBalancesAction, updateBalancesActionCreator, useStakingData } from "@/hooks";
 
 type BalancesProps = {
     chainName: string,
-    address: string
+    address: string,
+    dispatchGrantersBalances: Dispatch<GranterBalancesAction>
 }
 
-const Balances = (props: BalancesProps) => {
-    const { data, isLoading, refetch } = useStakingData(props.chainName, props.address);
+const Balances = ({
+    address,
+    chainName,
+    dispatchGrantersBalances
+}: BalancesProps) => {
+    const { data, isLoading, refetch } = useStakingData(chainName, address);
 
+    useEffect(()=>{
+        if (!isLoading && data) {
+            dispatchGrantersBalances(updateBalancesActionCreator({
+                address,
+                data
+            }))
+        }
+    }, [data, isLoading, dispatchGrantersBalances, address])
 
 
     return (<>

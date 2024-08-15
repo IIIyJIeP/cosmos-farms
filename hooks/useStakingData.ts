@@ -241,3 +241,5 @@ export const useStakingData = (chainName: string, stakingAddress?: string) => {
 
   return { data, isLoading, refetch };
 };
+
+export type BalancesData  = Exclude<ReturnType<typeof useStakingData>['data'], undefined>

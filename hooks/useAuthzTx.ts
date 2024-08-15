@@ -150,12 +150,16 @@ type AuthzTxOptions = {
   execExpiration?: Date | undefined;
 };
 
+export enum SignMode {
+  AMINO = 'AMINO',
+  DIRECT = 'DIRECT'
+}
+
 export const useAuthzTx = (chainName: string) => {
   const { toast } = useToast();
-  const { address, getRpcEndpoint, getOfflineSigner } =
-    useChain(chainName);
-
-  const authzTx = async (options: AuthzTxOptions) => {
+  const { address, getRpcEndpoint, getOfflineSignerAmino, getOfflineSignerDirect } = useChain(chainName);
+  
+  const authzTx = async (options: AuthzTxOptions, signMode?: SignMode) => {
     const {
       msgs,
       fee,
@@ -164,6 +168,8 @@ export const useAuthzTx = (chainName: string) => {
       execExpiration,
       toast: customToast,
     } = options;
+    const offlineSigner = signMode === 'DIRECT' ? getOfflineSignerDirect() : getOfflineSignerAmino()
+
 
     if (execExpiration && dayjs().isAfter(execExpiration)) {
       toast({
@@ -195,7 +201,7 @@ export const useAuthzTx = (chainName: string) => {
     try {
       client = await getSigningCosmosClient({
         rpcEndpoint: await getRpcEndpoint(),
-        signer: getOfflineSigner(),
+        signer: offlineSigner,
       });
       signed = await client.sign(address, msgs, fee || defaultFee, '');
     } catch (e: any) {

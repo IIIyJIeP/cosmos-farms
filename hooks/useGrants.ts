@@ -5,6 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { prettyGrants } from '@/utils';
 import { useRpcQueryClient } from './useRpcQueryClient';
 
+export type GrantsType = ReturnType<typeof prettyGrants>
+
 export const useGrants = (chainName: string) => {
   const { address } = useChain(chainName);
   const prevAddressRef = useRef(address);
