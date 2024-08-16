@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { Box, Spinner, Stack, Text } from '@interchain-ui/react';
 
 import { useGrantersBalances, useGrants } from '@/hooks';
@@ -13,6 +13,7 @@ type GrantsProps = {
 };
 
 export const Grants = ({ chainName, role }: GrantsProps) => {
+  const [counter, forceUpdate] = useReducer(x => x + 1, 0)
   const [isOpen, setIsOpen] = useState(false);
   const [viewingGrant, setViewingGrant] = useState<PrettyGrant>();
   const { data, isLoading, isError, refetch } = useGrants(chainName);
@@ -51,7 +52,7 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
                 <BalancesOverview 
                   grants={grants}
                   grantersBalances={grantersBalances}
-                  updateData={refetch}
+                  updateData={forceUpdate}
                   chainName={chainName}
                 />
               )}
@@ -65,7 +66,7 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
             >
               {grants.map((grant) => (
                 <GrantCard
-                  key={grant.address}
+                  key={grant.address + counter}
                   role={role}
                   grant={grant}
                   chainName={chainName}

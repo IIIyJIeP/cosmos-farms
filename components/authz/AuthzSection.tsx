@@ -1,6 +1,3 @@
-// TODO fix type issues
-// @ts-nocheck
-
 import { useState } from 'react';
 import { ChainName } from 'cosmos-kit';
 import { useChain } from '@cosmos-kit/react';
@@ -44,12 +41,14 @@ export const AuthzSection = ({ chainName }: { chainName: ChainName }) => {
             },
             {
               label: 'Slave(grants by me)',
-              content: null,
+              content: null
             },
           ]}
+          
           activeTab={activeTab}
           onActiveTabChange={(tabId) => setActiveTab(tabId)}
           attributes={{ width: '$min' }}
+        
         />
         {activeTab === 1 && <Button intent="tertiary" onClick={() => setIsOpen(true)}>
           Create Grant

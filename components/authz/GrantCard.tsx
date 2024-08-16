@@ -82,7 +82,7 @@ export const GrantCard = ({
       py="$11"
       backgroundColor="$cardBg"
       borderRadius="$lg"
-      width="$full"
+      width="$prose"
     >
       <Stack space="$4" attributes={{ alignItems: 'center', mb: '$10' }}>
         <Image
@@ -99,7 +99,7 @@ export const GrantCard = ({
       
       {!isGranter && <Balances dispatchGrantersBalances={dispatchGrantersBalances} chainName={chainName} address={grant.address} />}
 
-      <Box position="relative" mb="$10">
+      <Box position="relative" mb="$10" width='$full'>
         <TextField
           id="address"
           label={isGranter ? 'Grantee' : 'Granter'}

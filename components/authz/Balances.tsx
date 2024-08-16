@@ -15,14 +15,17 @@ const Balances = ({
 }: BalancesProps) => {
     const { data, isLoading, refetch } = useStakingData(chainName, address);
 
+    useEffect (() => refetch() ,[]) 
+
     useEffect(()=>{
+        
         if (!isLoading && data) {
             dispatchGrantersBalances(updateBalancesActionCreator({
                 address,
                 data
             }))
         }
-    }, [data, isLoading, dispatchGrantersBalances, address])
+    }, [data, isLoading, dispatchGrantersBalances, address ])
 
 
     return (<>

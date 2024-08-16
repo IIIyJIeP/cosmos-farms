@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Box,
+  Button,
   StakingAssetHeader,
   StakingClaimHeader,
 } from '@interchain-ui/react';
@@ -18,6 +19,7 @@ import { MsgWithdrawDelegatorReward } from '@/src/codegen/cosmos/distribution/v1
 import { useAuthzContext } from '@/context';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
+import { SendDetailsModal } from './SendDetailsModal';
 
 const BalancesOverview = ({
   grants,
@@ -46,6 +48,7 @@ const BalancesOverview = ({
   const prices = grantersBalances[0].data.prices
   
   const [isClaiming, setIsClaiming] = useState(false);
+  const [isSendDetailsOpen, setIsSendDetailsOpen] = useState(false);
   const { authzTx, createExecMsg } = useAuthzTx(chainName);
   
   
@@ -110,11 +113,11 @@ const BalancesOverview = ({
     <>
       <Box
         mb={{ mobile: '$8', tablet: '$12' }}
-        width='$full'
         display="grid"
-        gridTemplateColumns={{ mobile: '1fr', tablet: '1fr' }}
+        gridTemplateColumns={{ mobile: '1fr', tablet: '4fr 1fr' }}
       >
         <StakingAssetHeader
+          attributes={{mb: '$5'}}
           imgSrc={
             coin.logo_URIs?.png ||
             coin.logo_URIs?.svg ||
@@ -127,6 +130,9 @@ const BalancesOverview = ({
           available={Number(totalAvailableBalance) || 0}
           availablePrice={calcDollarValue(coin.base, totalAvailableBalance, prices)}
         />
+        <Button intent="tertiary" onClick={() => setIsSendDetailsOpen(true)}>
+          Send All
+        </Button>
       </Box>
       <Box  
         mb={{ mobile: '$12', tablet: '$14' }}
@@ -142,6 +148,14 @@ const BalancesOverview = ({
           isDisabled={!isGreaterThanZero(totalRewards)}
         />
       </Box>
+      <SendDetailsModal
+        isOpen={isSendDetailsOpen}
+        onClose={() => setIsSendDetailsOpen(false)}
+        chainName={chainName}
+        grants={grants}
+        grantersBalances={grantersBalances}
+        updateBalances={updateData}
+      />
     </>
   );
 };

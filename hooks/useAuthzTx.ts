@@ -254,11 +254,13 @@ export const useAuthzTx = (chainName: string) => {
             duration: 10000,
           });
         })
-        .finally(() => toast.close(broadcastToastId));
+        .finally(() => {
+          toast.close(broadcastToastId)
+          if (onSuccess) onSuccess()
+        });
     } else {
       toast.close(broadcastToastId);
     }
-
     if (onComplete) onComplete();
   };
 
