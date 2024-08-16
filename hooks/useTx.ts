@@ -77,7 +77,7 @@ export const useTx = (chainName: string) => {
     if (client && signed) {
       await client
         .broadcastTx(Uint8Array.from(txRaw.encode(signed).finish()))
-        .then((res) => {
+        .then((res: any) => {
           console.log(res);
           if (isDeliverTxSuccess(res)) {
             if (options.onSuccess) options.onSuccess();
@@ -96,7 +96,7 @@ export const useTx = (chainName: string) => {
             });
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error(err);
           toast({
             title: TxStatus.Failed,

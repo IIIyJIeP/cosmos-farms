@@ -16,7 +16,6 @@ import {
   type ParsedRewards as Rewards,
 } from '@/utils';
 import { MsgWithdrawDelegatorReward } from '@/src/codegen/cosmos/distribution/v1beta1/tx';
-import { useAuthzContext } from '@/context';
 import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
 import { SendDetailsModal } from './SendDetailsModal';
@@ -60,7 +59,9 @@ const BalancesOverview = ({
     (sumPermissions, currenrPermissions) => sumPermissions.concat(currenrPermissions), []
   ).map(perm => grantersBalances.filter(
       b => b.address === perm.granter
-    ).map(granterBalances => granterBalances.data.rewards.byValidators.map(
+    ).map(granterBalances => {
+        const rewards = granterBalances.data.rewards as Rewards
+        return rewards.byValidators.map(
           validator => {
             return {
               validatorAddress: validator.validatorAddress,
@@ -69,7 +70,7 @@ const BalancesOverview = ({
               expiration: perm.expiration
             }
           }
-      )
+      )}
     )
   ).reduce(
     (sumPerms, currenrPerms) => sumPerms.concat(currenrPerms), []
@@ -112,12 +113,12 @@ const BalancesOverview = ({
   return (
     <>
       <Box
+        m
         mb={{ mobile: '$8', tablet: '$12' }}
         display="grid"
         gridTemplateColumns={{ mobile: '1fr', tablet: '4fr 1fr' }}
       >
         <StakingAssetHeader
-          attributes={{mb: '$5'}}
           imgSrc={
             coin.logo_URIs?.png ||
             coin.logo_URIs?.svg ||
@@ -130,7 +131,7 @@ const BalancesOverview = ({
           available={Number(totalAvailableBalance) || 0}
           availablePrice={calcDollarValue(coin.base, totalAvailableBalance, prices)}
         />
-        <Button intent="tertiary" onClick={() => setIsSendDetailsOpen(true)}>
+        <Button attributes={{mt: '$5'}} intent="tertiary" onClick={() => setIsSendDetailsOpen(true)}>
           Send All
         </Button>
       </Box>
