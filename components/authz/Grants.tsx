@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useState } from 'react';
 import { Box, Spinner, Stack, Text } from '@interchain-ui/react';
 
-import { useGrantersBalances, useGrants } from '@/hooks';
+import { resetBalances, useGrantersBalances, useGrants } from '@/hooks';
 import { PrettyGrant } from '@/utils';
 import { GrantCard } from './GrantCard';
 import { GrantDetailsModal } from './GrantDetailsModal';
@@ -21,6 +21,10 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
   const isGranter = role === 'granter';
   const grants = isGranter ? data?.granterGrants : data?.granteeGrants;
 
+  useEffect(() => {
+    dispatchGrantersBalances(resetBalances())
+  }, [dispatchGrantersBalances, grants])
+  
   const renderContent = () => {
     if (isError) {
       return (

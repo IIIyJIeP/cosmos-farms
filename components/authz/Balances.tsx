@@ -1,6 +1,6 @@
 import React, { Dispatch, useEffect } from "react";
 import { Stack, Text } from '@interchain-ui/react'
-import { GranterBalancesAction, updateBalancesActionCreator, useStakingData } from "@/hooks";
+import { GranterBalancesAction, updateBalances, useStakingData } from "@/hooks";
 
 type BalancesProps = {
     chainName: string,
@@ -20,7 +20,7 @@ const Balances = ({
     useEffect(()=>{
         
         if (!isLoading && data) {
-            dispatchGrantersBalances(updateBalancesActionCreator({
+            dispatchGrantersBalances(updateBalances({
                 address,
                 data
             }))

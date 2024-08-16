@@ -193,17 +193,21 @@ export const useAuthzTx = (chainName: string) => {
     let signed: Parameters<typeof txRaw.encode>['0'];
     let client: Awaited<ReturnType<typeof getSigningCosmosClient>>;
 
-    const defaultFee: StdFee = {
-      amount: [coin('0', getTokenByChainName(chainName).base)],
-      gas: '860000',
-    };
-
     try {
       client = await getSigningCosmosClient({
         rpcEndpoint: await getRpcEndpoint(),
         signer: offlineSigner,
       });
-      signed = await client.sign(address, msgs, fee || defaultFee, '');
+      
+      const estimatedGas = Math.round((await client.simulate(address, msgs, ''))*1.3).toString()
+      const defaultFee: StdFee = {
+        amount: [coin('0', getTokenByChainName(chainName).base)],
+        gas: estimatedGas,
+      }
+
+      signed = await client.sign(address, msgs, fee || defaultFee, '')
+
+      
     } catch (e: any) {
       console.error(e);
       toast({

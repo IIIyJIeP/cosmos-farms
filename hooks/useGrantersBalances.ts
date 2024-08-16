@@ -8,6 +8,7 @@ export type GranterBalances = {
 }
 enum GranterBalancesActionTypes {
   UPDATE_BALANCES = 'UPDATE_BALANCES',
+  RESET_BALANCES = 'RESET_BALANCES',
 }
 
 export interface GranterBalancesAction {
@@ -15,10 +16,16 @@ export interface GranterBalancesAction {
   granterBalances?: GranterBalances
 }
 
-export const updateBalancesActionCreator = (granterBalances: GranterBalances) => {
+export const updateBalances = (granterBalances: GranterBalances) => {
   return {
     type: GranterBalancesActionTypes.UPDATE_BALANCES,
     granterBalances 
+  } as GranterBalancesAction
+}
+
+export const resetBalances = () => {
+  return {
+    type: GranterBalancesActionTypes.RESET_BALANCES,
   } as GranterBalancesAction
 }
 
@@ -32,6 +39,9 @@ export const useGrantersBalances = () => {
             ...grantersBalancesState.filter(granterBalances => granterBalances.address !== address),
             { address, data }
           ]
+        }
+        case GranterBalancesActionTypes.RESET_BALANCES: {
+          return [] as GranterBalances[]
         }
 
 
