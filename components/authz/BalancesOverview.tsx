@@ -113,7 +113,6 @@ const BalancesOverview = ({
   return (
     <>
       <Box
-        m
         mb={{ mobile: '$8', tablet: '$12' }}
         display="grid"
         gridTemplateColumns={{ mobile: '1fr', tablet: '4fr 1fr' }}
