@@ -58,6 +58,7 @@ const { rpcQueryClient, isLoading: isRpcQueryClientLoading } =
         refetch();
       prevAddressRef.current = address
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   const isInitialFetching = Object.values(dataQueries).some(

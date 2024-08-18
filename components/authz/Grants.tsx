@@ -70,7 +70,7 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
             >
               {grants.map((grant) => (
                 <GrantCard
-                  key={grant.address + counter}
+                  key={grant.address}
                   role={role}
                   grant={grant}
                   chainName={chainName}
@@ -79,6 +79,7 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
                     setViewingGrant(grant);
                   }}
                   dispatchGrantersBalances={dispatchGrantersBalances}
+                  count={counter}
                 />
               ))}
             </Box>

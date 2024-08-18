@@ -24,6 +24,7 @@ type GrantCardProps = {
   chainName: string;
   onViewDetails: () => void;
   dispatchGrantersBalances: Dispatch<GranterBalancesAction>
+  count: number
 };
 
 export const GrantCard = ({
@@ -31,7 +32,8 @@ export const GrantCard = ({
   grant,
   chainName,
   onViewDetails,
-  dispatchGrantersBalances
+  dispatchGrantersBalances,
+  count
 }: GrantCardProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isRevoking, setIsRevoking] = useState(false);
@@ -97,7 +99,12 @@ export const GrantCard = ({
         </Text>
       </Stack>
       
-      {!isGranter && <Balances dispatchGrantersBalances={dispatchGrantersBalances} chainName={chainName} address={grant.address} />}
+      {!isGranter && <Balances 
+        dispatchGrantersBalances={dispatchGrantersBalances} 
+        chainName={chainName} 
+        address={grant.address}
+        count={count}
+      />}
 
       <Box position="relative" mb="$10" width='$full'>
         <TextField
