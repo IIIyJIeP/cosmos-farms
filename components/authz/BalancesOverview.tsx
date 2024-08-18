@@ -130,7 +130,13 @@ const BalancesOverview = ({
           available={Number(totalAvailableBalance) || 0}
           availablePrice={calcDollarValue(coin.base, totalAvailableBalance, prices)}
         />
-        <Button attributes={{mt: '$5'}} intent="tertiary" onClick={() => setIsSendDetailsOpen(true)}>
+        <Button 
+          attributes={{mt: '$5'}} 
+          intent="tertiary" 
+          onClick={() => setIsSendDetailsOpen(true)} 
+          disabled={!isGreaterThanZero(totalAvailableBalance)}
+          isLoading={isSendDetailsOpen || grants.length !== grantersBalances.length}
+        >
           Send All
         </Button>
       </Box>
@@ -144,7 +150,7 @@ const BalancesOverview = ({
           rewardsAmount={Number(totalRewards) || 0}
           stakedAmount={Number(totalStaked) || 0}
           onClaim={onClaimRewardClick}
-          isLoading={isClaiming}
+          isLoading={isClaiming || grants.length !== grantersBalances.length}
           isDisabled={!isGreaterThanZero(totalRewards)}
         />
       </Box>
