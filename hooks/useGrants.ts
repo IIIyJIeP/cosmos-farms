@@ -10,12 +10,12 @@ export type GrantsType = ReturnType<typeof prettyGrants>
 export const useGrants = (chainName: string) => {
   const { address } = useChain(chainName);
   const prevAddressRef = useRef(address);
-
-  const { rpcQueryClient, isLoading: isRpcQueryClientLoading } =
+  
+const { rpcQueryClient, isLoading: isRpcQueryClientLoading } =
     useRpcQueryClient(chainName);
 
   const granterGrantsQuery = useQuery({
-    queryKey: ['granterGrants', address],
+    queryKey: ['granterGrants', address, rpcQueryClient],
     queryFn: () =>
       rpcQueryClient?.cosmos.authz.v1beta1.granterGrants({
         granter: address || '',
@@ -26,14 +26,13 @@ export const useGrants = (chainName: string) => {
   });
 
   const granteeGrantsQuery = useInfiniteQuery({
-    queryKey: ['granteeGrants', address],
+    queryKey: ['granteeGrants', address, rpcQueryClient],
     queryFn: (params) =>
       rpcQueryClient?.cosmos.authz.v1beta1.granteeGrants({
         grantee: address || '',
         pagination: params.pageParam
       }),
     enabled: !!rpcQueryClient && !!address,
-    //select: (data) =>[...data?.pages],
     staleTime: Infinity,
     getNextPageParam: (lastPage, pages) => lastPage?.pagination?.nextKey && lastPage?.pagination?.nextKey.length > 0 ? {key: lastPage.pagination.nextKey} : undefined,
   });
@@ -56,8 +55,8 @@ export const useGrants = (chainName: string) => {
 
   useEffect(() => {
     if (prevAddressRef.current !== address) {
-      refetch();
-      prevAddressRef.current = address;
+        refetch();
+      prevAddressRef.current = address
     }
   }, [address]);
 
@@ -73,10 +72,10 @@ export const useGrants = (chainName: string) => {
     isRpcQueryClientLoading || isInitialFetching || isRefetching || granteeGrantsQuery.hasNextPage;
 
   useEffect(() => {
-    if (granteeGrantsQuery.hasNextPage) {
+    if (granteeGrantsQuery.hasNextPage && !granteeGrantsQuery.isFetchingNextPage) {
       granteeGrantsQuery.fetchNextPage()
     }
-  }, [granteeGrantsQuery.hasNextPage])
+  }, [granteeGrantsQuery])
   
     const isError = !rpcQueryClient && !isRpcQueryClientLoading;
 

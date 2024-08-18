@@ -201,7 +201,7 @@ export const useAuthzTx = (chainName: string) => {
         signer: offlineSigner,
       });
       
-      const estimatedGas = Math.round((await client.simulate(address, msgs, ''))*1.3).toString()
+      const estimatedGas = Math.round((await client.simulate(address, msgs, ''))*1.4).toString()
       const defaultFee: StdFee = {
         amount: [coin('0', getTokenByChainName(chainName).base)],
         gas: estimatedGas,
