@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChain } from '@cosmos-kit/react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { prettyGrants } from '@/utils';
 import { useRpcQueryClient } from './useRpcQueryClient';
@@ -25,16 +25,20 @@ export const useGrants = (chainName: string) => {
     staleTime: Infinity,
   });
 
-  const granteeGrantsQuery = useQuery({
+  const granteeGrantsQuery = useInfiniteQuery({
     queryKey: ['granteeGrants', address],
-    queryFn: () =>
+    queryFn: (params) =>
       rpcQueryClient?.cosmos.authz.v1beta1.granteeGrants({
         grantee: address || '',
+        pagination: params.pageParam
       }),
     enabled: !!rpcQueryClient && !!address,
-    select: (data) => data?.grants,
+    //select: (data) =>[...data?.pages],
     staleTime: Infinity,
+    getNextPageParam: (lastPage, pages) => lastPage?.pagination?.nextKey && lastPage?.pagination?.nextKey.length > 0 ? {key: lastPage.pagination.nextKey} : undefined,
   });
+  
+  
 
   const dataQueries = {
     granterGrants: granterGrantsQuery,
@@ -66,9 +70,15 @@ export const useGrants = (chainName: string) => {
   );
 
   const isLoading =
-    isRpcQueryClientLoading || isInitialFetching || isRefetching;
+    isRpcQueryClientLoading || isInitialFetching || isRefetching || granteeGrantsQuery.hasNextPage;
 
-  const isError = !rpcQueryClient && !isRpcQueryClientLoading;
+  useEffect(() => {
+    if (granteeGrantsQuery.hasNextPage) {
+      granteeGrantsQuery.fetchNextPage()
+    }
+  }, [granteeGrantsQuery.hasNextPage])
+  
+    const isError = !rpcQueryClient && !isRpcQueryClientLoading;
 
   type DataQueries = typeof dataQueries;
 
@@ -78,15 +88,18 @@ export const useGrants = (chainName: string) => {
 
   const data = useMemo(() => {
     if (isLoading) return;
-
     const queriesData = Object.fromEntries(
       Object.entries(dataQueries).map(([key, query]) => [key, query.data])
     ) as QueriesData;
 
     const { granteeGrants, granterGrants } = queriesData;
 
+    const allPagesGranteeGrants = granteeGrants.pages.map(page => page?.grants || [] ).reduce(
+      (sum, currenr) => sum.concat(currenr), []
+    )
+
     return {
-      granteeGrants: prettyGrants(granteeGrants, 'granter'),
+      granteeGrants: prettyGrants(allPagesGranteeGrants, 'granter'),
       granterGrants: prettyGrants(granterGrants, 'grantee'),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

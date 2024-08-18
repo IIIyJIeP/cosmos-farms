@@ -15,11 +15,15 @@ const Balances = ({
 }: BalancesProps) => {
     const { data, isLoading, refetch } = useStakingData(chainName, address);
 
-    useEffect (() => refetch() ,[]) 
+    useEffect (() => {
+        if (data && (!data.rewards || !data.balance || !data.totalDelegated)){
+            refetch() 
+        }
+    },[data, refetch]) 
 
     useEffect(()=>{
         
-        if (!isLoading && data) {
+        if (!isLoading && data && data.rewards && data.balance && data.totalDelegated) {
             dispatchGrantersBalances(updateBalances({
                 address,
                 data
@@ -63,7 +67,7 @@ const Balances = ({
                     fontWeight="$semibold"
                     lineHeight="$normal"
                 >
-                    {data?.rewards.total || 'n/a'}
+                    {data?.rewards?.total || 'n/a'}
                 </Text>
             </Stack>
             <Stack direction="vertical" space="$1">

@@ -1,3 +1,4 @@
+import { rpcURLs } from '@/configs';
 import { useChain } from '@cosmos-kit/react';
 import {
   useRpcEndpoint,
@@ -6,7 +7,7 @@ import {
 } from 'interchain-query';
 
 export const useQueryHooks = (chainName: string) => {
-  const { getRpcEndpoint } = useChain(chainName);
+  const { getRpcEndpoint,  } = useChain(chainName);
 
   const rpcEndpointQuery = useRpcEndpoint({
     getter: getRpcEndpoint,
@@ -17,11 +18,13 @@ export const useQueryHooks = (chainName: string) => {
       },
     },
   });
+  
+  const rpcEndpoint = rpcURLs[chainName] || rpcEndpointQuery.data || ''
 
   const rpcClientQuery = useRpcClient({
-    rpcEndpoint: rpcEndpointQuery.data || '',
+    rpcEndpoint: rpcEndpoint,
     options: {
-      enabled: Boolean(rpcEndpointQuery.data),
+      enabled: Boolean(rpcEndpoint),
       staleTime: Infinity,
     },
   });
@@ -37,6 +40,6 @@ export const useQueryHooks = (chainName: string) => {
     cosmos,
     isReady,
     isFetching,
-    rpcEndpoint: rpcEndpointQuery.data,
+    rpcEndpoint,
   };
 };

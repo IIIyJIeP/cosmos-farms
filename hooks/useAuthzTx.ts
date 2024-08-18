@@ -24,6 +24,7 @@ import {
   MsgUndelegate,
 } from '@/src/codegen/cosmos/staking/v1beta1/tx';
 import dayjs from 'dayjs';
+import { useQueryHooks } from './useQueryHooks';
 
 const { grant, revoke, exec } =
   cosmos.authz.v1beta1.MessageComposer.fromPartial;
@@ -157,8 +158,9 @@ export enum SignMode {
 
 export const useAuthzTx = (chainName: string) => {
   const { toast } = useToast();
-  const { address, getRpcEndpoint, getOfflineSignerAmino, getOfflineSignerDirect } = useChain(chainName);
-  
+  const { address, getOfflineSignerAmino, getOfflineSignerDirect } = useChain(chainName);
+  const {rpcEndpoint} = useQueryHooks(chainName)
+
   const authzTx = async (options: AuthzTxOptions, signMode?: SignMode) => {
     const {
       msgs,
@@ -195,7 +197,7 @@ export const useAuthzTx = (chainName: string) => {
 
     try {
       client = await getSigningCosmosClient({
-        rpcEndpoint: await getRpcEndpoint(),
+        rpcEndpoint: rpcEndpoint,
         signer: offlineSigner,
       });
       

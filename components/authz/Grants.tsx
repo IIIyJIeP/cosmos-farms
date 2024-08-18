@@ -37,7 +37,7 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
     if (isLoading) {
       return <Spinner size="$6xl" />;
     }
-
+    
     if (grants && grants.length > 0) {
       return (
         <>
