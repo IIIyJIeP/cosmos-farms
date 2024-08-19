@@ -13,3 +13,4 @@ export * from './useVotingData';
 export * from './useModal';
 export * from './useSendData';
 export * from './useGrantersBalances';
+export * from './useBalances';

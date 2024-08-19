@@ -1,6 +1,6 @@
 import React, { Dispatch, useEffect, useRef } from "react";
 import { Stack, Text } from '@interchain-ui/react'
-import { GranterBalancesAction, updateBalances, useStakingData } from "@/hooks";
+import { GranterBalancesAction, updateBalances, useBalances } from "@/hooks";
 
 type BalancesProps = {
     chainName: string,
@@ -15,7 +15,7 @@ const Balances = ({
     dispatchGrantersBalances,
     count
 }: BalancesProps) => {
-    const { data, isLoading, refetch } = useStakingData(chainName, address);
+    const { data, isLoading, refetch } = useBalances(chainName, address);
     const prevCount = useRef(count);
 
 

@@ -5,12 +5,26 @@ import {
   useRpcClient,
   createRpcQueryHooks,
 } from 'interchain-query';
+import { cosmos as chain} from '@/src/codegen'
 
 export const useQueryHooks = (chainName: string) => {
-  const { getRpcEndpoint,  } = useChain(chainName);
+  const { getRpcEndpoint } = useChain(chainName);
+
+  const getCustomRpcEndpoint = async () => {
+    const rpcEndpoint = rpcURLs[chainName]
+    if (!rpcEndpoint) return getRpcEndpoint()
+    try {
+      const client = await chain.ClientFactory.createRPCQueryClient({ rpcEndpoint })
+      if (!client) return getRpcEndpoint()
+    } catch (err) {
+      console.log(err)
+      return getRpcEndpoint()
+    }
+    return  rpcEndpoint
+  }
 
   const rpcEndpointQuery = useRpcEndpoint({
-    getter: getRpcEndpoint,
+    getter: getCustomRpcEndpoint,
     options: {
       staleTime: Infinity,
       queryKeyHashFn: (queryKey) => {
@@ -19,12 +33,10 @@ export const useQueryHooks = (chainName: string) => {
     },
   });
   
-  const rpcEndpoint = rpcURLs[chainName] || rpcEndpointQuery.data || ''
-
   const rpcClientQuery = useRpcClient({
-    rpcEndpoint: rpcEndpoint,
+    rpcEndpoint: rpcEndpointQuery.data || '',
     options: {
-      enabled: Boolean(rpcEndpoint),
+      enabled: Boolean(rpcEndpointQuery.data),
       staleTime: Infinity,
     },
   });
@@ -40,6 +52,6 @@ export const useQueryHooks = (chainName: string) => {
     cosmos,
     isReady,
     isFetching,
-    rpcEndpoint,
+    rpcEndpoint: rpcEndpointQuery.data || '',
   };
 };

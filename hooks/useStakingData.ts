@@ -21,10 +21,10 @@ import { useQueryHooks } from './useQueryHooks';
   return this.toString();
 };
 
-export const useStakingData = (chainName: string, stakingAddress?: string) => {
+export const useStakingData = (chainName: string) => {
   const { permission } = useAuthzContext();
 
-  const address = stakingAddress || permission?.granter;
+  const address = permission?.granter;
 
   const coin = getCoin(chainName);
   const exp = getExponent(chainName);
@@ -241,5 +241,3 @@ export const useStakingData = (chainName: string, stakingAddress?: string) => {
 
   return { data, isLoading, refetch };
 };
-
-export type BalancesData  = Exclude<ReturnType<typeof useStakingData>['data'], undefined>

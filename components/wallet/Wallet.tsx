@@ -8,7 +8,7 @@ import {
   Stack,
   useColorModeValue,
 } from '@interchain-ui/react';
-import { WalletStatus,  } from 'cosmos-kit';
+import { WalletStatus } from 'cosmos-kit';
 import { useChain, useManager } from '@cosmos-kit/react';
 import { chains } from 'chain-registry';
 import { User } from './User';
@@ -49,8 +49,8 @@ export function Wallet({
     connect,
     openView,
   } = useChain(chainName);
-  const { getChainLogo } = useManager();
-
+  const { getChainLogo,  } = useManager();
+  
   const ConnectButton = {
     [WalletStatus.Connected]: <ButtonConnected text={username} onClick={openView} />,
     [WalletStatus.Connecting]: <ButtonConnecting />,
