@@ -8,7 +8,7 @@ import {
 import { ChainName } from 'cosmos-kit';
 
 import { getCoin } from '@/configs';
-import { GranterBalances, GrantsType, SignMode, useAuthzTx } from '@/hooks';
+import { AllBalancesData, GrantsType, SignMode, useAuthzTx } from '@/hooks';
 import {
   sum,
   calcDollarValue,
@@ -27,57 +27,51 @@ const BalancesOverview = ({
   chainName,
 }: {
   grants: GrantsType;
-  grantersBalances: GranterBalances[];
+  grantersBalances: AllBalancesData;
   updateData: () => void;
   chainName: ChainName;
 }) => {
-  
-  const totalAvailableBalance = grantersBalances.reduce(
-    (sum, c) => sum.plus(c.data.balance), new BigNumber(0)
+  const totalAvailableBalance = Object.values(
+    grantersBalances.balancesData
+  ).reduce((sum, current) => 
+    sum.plus(current.balance), new BigNumber(0)
   ).toString()
 
-  const totalStaked = grantersBalances.reduce(
-    (sum, c) => sum.plus(c.data.totalDelegated), new BigNumber(0)
+  const totalStaked = Object.values(
+    grantersBalances.balancesData
+  ).reduce((sum, current) => 
+    sum.plus(current.totalDelegated), new BigNumber(0)
   ).toString()
   
-  const totalRewards = grantersBalances.reduce(
-    (sum, c) => sum.plus(c.data.rewards.total), new BigNumber(0)
+  const totalRewards = Object.values(
+    grantersBalances.balancesData
+  ).reduce((sum, current) => 
+    sum.plus(current.rewards.total), new BigNumber(0)
   ).toString()
   
-  const prices = grantersBalances[0].data.prices
+  const prices = grantersBalances.prices
   
   const [isClaiming, setIsClaiming] = useState(false);
   const [isSendDetailsOpen, setIsSendDetailsOpen] = useState(false);
   const { authzTx, createExecMsg } = useAuthzTx(chainName);
   
   
-  
-  const claimPermissions = grants.map(
-    (grant) => grant.permissions.filter(
-      perm => perm.name === 'WithdrawDelegatorReward'
-  )).reduce(
-    (sumPermissions, currenrPermissions) => sumPermissions.concat(currenrPermissions), []
-  ).map(perm => grantersBalances.filter(
-      b => b.address === perm.granter
-    ).map(granterBalances => {
-        const rewards = granterBalances.data.rewards as Rewards
-        return rewards.byValidators.map(
-          validator => {
-            return {
-              validatorAddress: validator.validatorAddress,
-              grantee: perm.grantee,
-              granter: perm.granter,
-              expiration: perm.expiration
-            }
+  const claimPermissions = grants.map((grant) => grant.permissions.filter(
+    perm => perm.name === 'WithdrawDelegatorReward'))
+    .reduce((sum, cur) => sum.concat(cur), [])
+    .map((perm) =>
+      grantersBalances.balancesData[perm.granter].rewards.byValidators.map(
+        (validator) => {
+          return {
+            validatorAddress: validator.validatorAddress,
+            grantee: perm.grantee,
+            granter: perm.granter,
+            expiration: perm.expiration
           }
-      )}
-    )
-  ).reduce(
-    (sumPerms, currenrPerms) => sumPerms.concat(currenrPerms), []
-  ).reduce(
-    (sPerms, curPerms) => sPerms.concat(curPerms), []
-  )
-  
+        }
+      ))
+    .reduce((sum, cur) => sum.concat(cur), [])
+
   const totalAmount = sum(totalAvailableBalance, totalStaked, totalRewards ?? 0);
   const coin = getCoin(chainName);
 
@@ -135,7 +129,7 @@ const BalancesOverview = ({
           intent="tertiary" 
           onClick={() => setIsSendDetailsOpen(true)} 
           disabled={!isGreaterThanZero(totalAvailableBalance)}
-          isLoading={isSendDetailsOpen || grants.length !== grantersBalances.length}
+          isLoading={isSendDetailsOpen}
         >
           Send All
         </Button>
@@ -150,7 +144,7 @@ const BalancesOverview = ({
           rewardsAmount={Number(totalRewards) || 0}
           stakedAmount={Number(totalStaked) || 0}
           onClaim={onClaimRewardClick}
-          isLoading={isClaiming || grants.length !== grantersBalances.length}
+          isLoading={isClaiming}
           isDisabled={!isGreaterThanZero(totalRewards)}
         />
       </Box>

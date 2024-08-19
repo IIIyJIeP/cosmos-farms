@@ -1,48 +1,15 @@
 import React, { Dispatch, useEffect, useRef } from "react";
 import { Stack, Text } from '@interchain-ui/react'
-import { GranterBalancesAction, updateBalances, useBalances } from "@/hooks";
+import { BalancesData } from "@/hooks";
 
 type BalancesProps = {
-    chainName: string,
-    address: string,
-    dispatchGrantersBalances: Dispatch<GranterBalancesAction>
-    count: number
+    balances?: BalancesData
 }
 
 const Balances = ({
-    address,
-    chainName,
-    dispatchGrantersBalances,
-    count
+    balances
 }: BalancesProps) => {
-    const { data, isLoading, refetch } = useBalances(chainName, address);
-    const prevCount = useRef(count);
-
-
-    useEffect (() => {
-        if (prevCount.current !== count) {
-            refetch()
-            prevCount.current = count
-        }
-    },[count, refetch]) 
-
-    useEffect (() => {
-        if (data && (!data.rewards || !data.balance || !data.totalDelegated)){
-            refetch() 
-        }
-    },[data, refetch]) 
-
-    useEffect(()=>{
-        
-        if (!isLoading && data && data.rewards && data.balance && data.totalDelegated) {
-            dispatchGrantersBalances(updateBalances({
-                address,
-                data
-            }))
-        }
-    }, [data, isLoading, dispatchGrantersBalances, address ])
-
-
+    
     return (<>
         <Stack direction="horizontal" space="$8" attributes={{ alignItems: 'center', mb: '$10' }}>
             <Stack direction="vertical" space="$1">
@@ -60,7 +27,7 @@ const Balances = ({
                     fontWeight="$semibold"
                     lineHeight="$normal"
                 >
-                    {data?.totalDelegated || 'n/a'}
+                    { balances?.totalDelegated || 'n/a'}
                 </Text>
             </Stack>
             <Stack direction="vertical" space="$1">
@@ -78,7 +45,7 @@ const Balances = ({
                     fontWeight="$semibold"
                     lineHeight="$normal"
                 >
-                    {data?.rewards?.total || 'n/a'}
+                    {balances?.rewards.total || 'n/a'}
                 </Text>
             </Stack>
             <Stack direction="vertical" space="$1">
@@ -96,7 +63,7 @@ const Balances = ({
                     fontWeight="$semibold"
                     lineHeight="$normal"
                 >
-                    {data?.balance || 'n/a'}
+                    {balances?.balance || 'n/a'}
                 </Text>
             </Stack>
         </Stack>

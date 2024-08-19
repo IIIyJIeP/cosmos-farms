@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Dispatch, useState } from 'react';
+import { useState } from 'react';
 import { Box, Button, IconButton, Stack, Text, TextField } from '@interchain-ui/react';
 import { useChain } from '@cosmos-kit/react';
 
@@ -12,19 +12,18 @@ import {
   PrettyPermission,
 } from '@/utils';
 import { useAuthzContext } from '@/context';
-import { GranterBalancesAction, useAuthzTx, useGrants } from '@/hooks';
+import { useAuthzTx, useGrants } from '@/hooks';
 import { getCoin, permissionNameToRouteMap } from '@/configs';
 
-import styles from '@/styles/custom.module.css';
 import Balances from './Balances';
+import { BalancesData } from '@/hooks';
 
 type GrantCardProps = {
   role: 'granter' | 'grantee';
   grant: PrettyGrant;
   chainName: string;
   onViewDetails: () => void;
-  dispatchGrantersBalances: Dispatch<GranterBalancesAction>
-  count: number
+  balances?: BalancesData
 };
 
 export const GrantCard = ({
@@ -32,8 +31,7 @@ export const GrantCard = ({
   grant,
   chainName,
   onViewDetails,
-  dispatchGrantersBalances,
-  count
+  balances
 }: GrantCardProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isRevoking, setIsRevoking] = useState(false);
@@ -99,12 +97,7 @@ export const GrantCard = ({
         </Text>
       </Stack>
       
-      {!isGranter && <Balances 
-        dispatchGrantersBalances={dispatchGrantersBalances} 
-        chainName={chainName} 
-        address={grant.address}
-        count={count}
-      />}
+      {!isGranter && <Balances balances={balances}/>}
 
       <Box position="relative" mb="$10" width='$full'>
         <TextField

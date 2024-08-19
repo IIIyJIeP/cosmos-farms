@@ -1,19 +1,13 @@
 import { useState } from 'react';
 import { ChainName } from 'cosmos-kit';
-import {
-    BasicModal,
-    Box,
-    Button,
-    FieldLabel,
-    NumberField,
-} from '@interchain-ui/react';
+import { BasicModal, Box, Button, FieldLabel, NumberField } from '@interchain-ui/react';
 import { useChain } from '@cosmos-kit/react';
 import dayjs from 'dayjs';
 
 import {
     getExponent,
 } from '@/configs';
-import { createExecMsg, GranterBalances, GrantMsg, GrantsType, useAuthzTx, useGrants, useToast } from '@/hooks';
+import { AllBalancesData, createExecMsg, GrantsType, useAuthzTx, useToast } from '@/hooks';
 import { getTokenByChainName, shiftDigits } from '@/utils';
 import { AddressInput } from '@/components';
 import { MsgSend, MsgSendProtoMsg } from '@/src/codegen/cosmos/bank/v1beta1/tx';
@@ -30,7 +24,7 @@ type SendModalProps = {
     onClose: () => void;
     chainName: ChainName;
     grants: GrantsType;
-    grantersBalances: GranterBalances[];
+    grantersBalances: AllBalancesData;
     updateBalances: () => void
 };
 
@@ -41,7 +35,7 @@ export const SendDetailsModal = ({ isOpen, onClose, chainName, grants, grantersB
     const defaultSendLimit = 0.1
     const [sendLimit, setSendLimit] = useState<number>(defaultSendLimit);
     const [isSending, setIsSending] = useState(false);
-    const { authzTx, createGrantMsg } = useAuthzTx(chainName);
+    const { authzTx } = useAuthzTx(chainName);
     const { toast } = useToast();
     const token = getTokenByChainName(chainName);
     const exponent = getExponent(chainName);
@@ -72,7 +66,7 @@ export const SendDetailsModal = ({ isOpen, onClose, chainName, grants, grantersB
         
         for (let permission of sendPermissions) {
             const { granter, authorization } = permission;
-            const balances = grantersBalances.find(balance => balance.address === granter)?.data
+            const balances = grantersBalances.balancesData[granter]
             if (!balances) continue
             
             const amount = BigNumber(balances.balance).minus(sendLimit)
@@ -84,7 +78,7 @@ export const SendDetailsModal = ({ isOpen, onClose, chainName, grants, grantersB
             )
 
             if (SendAuthorization.is(authorization)) {
-                const limitAmount = authorization?.spendLimit?.[0]?.amount;
+                const limitAmount = authorization.spendLimit[0].amount;
                 if (limitAmount && new BigNumber(sendAmount).gt(limitAmount)) {
                     toast({
                         type: 'error',

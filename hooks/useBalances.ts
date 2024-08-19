@@ -13,7 +13,7 @@ import { useQueryHooks } from './useQueryHooks';
   return this.toString();
 };
 
-export const useBalances = (chainName: string, address: string) => {
+export const useBalances = (chainName: string, addresses: string[]) => {
   const coin = getCoin(chainName);
   const exp = getExponent(chainName);
 
@@ -23,90 +23,127 @@ export const useBalances = (chainName: string, address: string) => {
     isFetching: isQueryHooksFetching,
   } = useQueryHooks(chainName);
 
-  const balanceQuery = cosmosQuery.bank.v1beta1.useBalance({
-    request: {
+  const balanceQuerys = Object.fromEntries(addresses.map(address => {
+    return [
       address,
-      denom: coin.base,
-    },
-    options: {
-      enabled: isQueryHooksReady && !!address,
-      select: ({ balance }) => shiftDigits(balance?.amount || '0', -exp),
-    },
-  });
+      cosmosQuery.bank.v1beta1.useBalance({
+        request: {
+          address,
+          denom: coin.base,
+        },
+        options: {
+          enabled: isQueryHooksReady && !!address,
+          select: ({ balance }) => shiftDigits(balance?.amount || '0', -exp),
+        },
+      }),
+    ]
+  }))
 
-  const rewardsQuery =
-    cosmosQuery.distribution.v1beta1.useDelegationTotalRewards({
-      request: {
-        delegatorAddress: address,
-      },
-      options: {
-        enabled: isQueryHooksReady && !!address,
-        select: (data) => parseRewards(data, coin.base, -exp),
-      },
-    });
+  const rewardsQuerys = Object.fromEntries(addresses.map(address => {
+    return [
+      address,
+      cosmosQuery.distribution.v1beta1.useDelegationTotalRewards({
+        request: {
+          delegatorAddress: address,
+        },
+        options: {
+          enabled: isQueryHooksReady && !!address,
+          select: (data) => parseRewards(data, coin.base, -exp),
+        },
+      }),
+    ]
+  }));
 
-  const delegationsQuery = cosmosQuery.staking.v1beta1.useDelegatorDelegations({
-    request: {
-      delegatorAddr: address,
-      pagination: {
-        key: new Uint8Array(),
-        offset: 0n,
-        limit: 100n,
-        countTotal: true,
-        reverse: false,
-      },
-    },
-    options: {
-      enabled: isQueryHooksReady && !!address,
-      select: ({ delegationResponses }) =>
-        parseDelegations(delegationResponses, -exp),
-    },
-  });
+  const delegationsQuerys = Object.fromEntries(addresses.map(address => {
+    return [
+      address,
+      cosmosQuery.staking.v1beta1.useDelegatorDelegations({
+        request: {
+          delegatorAddr: address,
+          pagination: {
+            key: new Uint8Array(),
+            offset: 0n,
+            limit: 100n,
+            countTotal: true,
+            reverse: false,
+          },
+        },
+        options: {
+          enabled: isQueryHooksReady && !!address,
+          select: ({ delegationResponses }) =>
+            parseDelegations(delegationResponses, -exp),
+        },
+      }),
+    ]
+  }));
 
   const pricesQuery = usePrices();
 
-  const allQueries = {
-    balance: balanceQuery,
-    rewards: rewardsQuery,
-    delegations: delegationsQuery,
-    prices: pricesQuery,
+  const allQueries = Object.fromEntries(addresses.map(address => {
+    return [
+      address,
+      {
+        balance: balanceQuerys[address],
+        rewards: rewardsQuerys[address],
+        delegations: delegationsQuerys[address],
+        prices: pricesQuery
+      }
+    ]
+  }))
+
+  type AllQueries = typeof allQueries
+  type Queries = AllQueries[keyof AllQueries]
+  type QueriesData = {
+    [Key in keyof Queries]: NonNullable<Queries[Key]['data']>;
   };
+  
 
-  const updatableQueriesAfterMutation = [
-    allQueries.balance,
-    allQueries.rewards,
-    allQueries.delegations,
-  ];
+  const updatableQueriesAfterMutation = Object.values(allQueries).map(
+    queries => [
+    queries.balance,
+    queries.rewards,
+    queries.delegations,
+  ]).reduce((result, current) => result.concat(current), [])
 
-  const isInitialFetching = Object.values(allQueries).some(
+  const rawAllQueries = [...updatableQueriesAfterMutation, pricesQuery]
+
+  const isInitialFetching =rawAllQueries.some(
     ({ isLoading }) => isLoading
   );
 
-  const isRefetching = Object.values(allQueries).some(
+  const isRefetching = rawAllQueries.some(
     ({ isRefetching }) => isRefetching
   );
 
   const isLoading = isQueryHooksFetching || isInitialFetching || isRefetching;
 
-  type AllQueries = typeof allQueries;
-
-  type QueriesData = {
-    [Key in keyof AllQueries]: NonNullable<AllQueries[Key]['data']>;
-  };
-
   const data = useMemo(() => {
     if (isLoading) return;
+    
+    const balancesData = Object.fromEntries(
+      Object.entries(allQueries).map(([address, querys]) => {
 
-    const queriesData = Object.fromEntries(
-      Object.entries(allQueries).map(([key, query]) => [key, query.data])
-    ) as QueriesData;
+        const queriesData = Object.fromEntries(
+          Object.entries(querys).map(([key, query]) => [key, query.data])
+        ) as QueriesData;
 
-    const { delegations } = queriesData;
-    const totalDelegated = calcTotalDelegation(delegations);
+        const { delegations } = queriesData;
 
+        const totalDelegated = calcTotalDelegation(delegations)
+
+        return [
+          address,
+          {
+            ...queriesData,
+            totalDelegated,
+          },
+        ]
+      })
+    )
+    
     return {
-      ...queriesData,
-      totalDelegated,
+      balancesData, 
+      prices: pricesQuery.data!,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
@@ -118,4 +155,5 @@ export const useBalances = (chainName: string, address: string) => {
   return { data, isLoading, refetch };
 };
 
-export type BalancesData  = Exclude<ReturnType<typeof useBalances>['data'], undefined>
+export type AllBalancesData = NonNullable<ReturnType<typeof useBalances>['data']>
+export type BalancesData =AllBalancesData['balancesData'][keyof AllBalancesData['balancesData']]

@@ -1,11 +1,12 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useState } from 'react';
 import { Box, Spinner, Stack, Text } from '@interchain-ui/react';
 
-import { resetBalances, useGrantersBalances, useGrants } from '@/hooks';
+import { useGrants } from '@/hooks';
 import { PrettyGrant } from '@/utils';
 import { GrantCard } from './GrantCard';
 import { GrantDetailsModal } from './GrantDetailsModal';
 import BalancesOverview from './BalancesOverview';
+import { useBalances } from '@/hooks';
 
 type GrantsProps = {
   role: 'granter' | 'grantee';
@@ -13,20 +14,72 @@ type GrantsProps = {
 };
 
 export const Grants = ({ chainName, role }: GrantsProps) => {
-  const [counter, forceUpdate] = useReducer(x => x + 1, 0)
   const [isOpen, setIsOpen] = useState(false);
   const [viewingGrant, setViewingGrant] = useState<PrettyGrant>();
-  const { data, isLoading, isError, refetch } = useGrants(chainName);
-  const [grantersBalances, dispatchGrantersBalances] = useGrantersBalances()
-  const isGranter = role === 'granter';
-  const grants = isGranter ? data?.granterGrants : data?.granteeGrants;
 
-  useEffect(() => {
-    dispatchGrantersBalances(resetBalances())
-  }, [dispatchGrantersBalances, grants])
-  
+  const { data: grantsData, isLoading: isGrantsLoading, isError: isGrantsError, refetch: grantsRefetch } = useGrants(chainName);
+  const isGranter = role === 'granter';
+  const grants = isGranter ? grantsData?.granterGrants : grantsData?.granteeGrants;
+
+  type Grants = NonNullable<typeof grants>
+
+  const RenderCards = ({ grants }: { grants: Grants }) => {
+    const grantersAddresses: string[] = grants.map(grant => grant.address) || []
+    const { data, isLoading, refetch } = useBalances(chainName, grantersAddresses)
+
+    
+    return (
+      <>
+        <Stack direction='vertical'>
+          {!isGranter && <Box>
+            {isLoading || !data ? (
+              <Box
+                height="$28"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Spinner size="$7xl" />
+              </Box>
+            ) : (
+              <BalancesOverview
+                grants={grants}
+                grantersBalances={data}
+                updateData={refetch}
+                chainName={chainName}
+              />
+            )}
+          </Box>}
+          <Box
+            width="$full"
+            alignSelf="flex-start"
+            display="grid"
+            gridTemplateColumns={{ mobile: '1fr', tablet: '1fr 1fr' }}
+            gap="$10"
+          >
+            {grants.map((grant) => (
+              <GrantCard
+                key={grant.address}
+                role={role}
+                grant={grant}
+                chainName={chainName}
+                onViewDetails={() => {
+                  setIsOpen(true);
+                  setViewingGrant(grant);
+                }}
+                balances={data?.balancesData?.[grant.address]}
+              />
+            ))}
+          </Box>
+
+
+        </Stack>
+      </>
+    )
+  }
+
   const renderContent = () => {
-    if (isError) {
+    if (isGrantsError) {
       return (
         <Text fontSize="$lg" color="$textDanger" fontWeight="$semibold">
           There was an error fetching grants. Please try again later.
@@ -34,58 +87,12 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
       );
     }
 
-    if (isLoading) {
+    if (isGrantsLoading) {
       return <Spinner size="$6xl" />;
     }
-    
+
     if (grants && grants.length > 0) {
-      return (
-        <>
-          <Stack direction='vertical'>
-            {!isGranter && <Box>
-              {grantersBalances.length === 0 ? (
-                <Box
-                  height="$28"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Spinner size="$7xl" />
-                </Box>
-              ) : (
-                <BalancesOverview 
-                  grants={grants}
-                  grantersBalances={grantersBalances}
-                  updateData={forceUpdate}
-                  chainName={chainName}
-                />
-              )}
-            </Box>}
-            <Box
-              width="$full"
-              alignSelf="flex-start"
-              display="grid"
-              gridTemplateColumns={{ mobile: '1fr', tablet: '1fr 1fr' }}
-              gap="$10"
-            >
-              {grants.map((grant) => (
-                <GrantCard
-                  key={grant.address}
-                  role={role}
-                  grant={grant}
-                  chainName={chainName}
-                  onViewDetails={() => {
-                    setIsOpen(true);
-                    setViewingGrant(grant);
-                  }}
-                  dispatchGrantersBalances={dispatchGrantersBalances}
-                  count={counter}
-                />
-              ))}
-            </Box>
-          </Stack>
-        </>
-      );
+      return <RenderCards grants={grants} />;
     }
 
     return (
