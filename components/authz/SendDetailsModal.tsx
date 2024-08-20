@@ -53,7 +53,7 @@ export const SendDetailsModal = ({ isOpen, onClose, chainName, grants, grantersB
     ).reduce((sumPerms, currenrPerm) => sumPerms.concat(currenrPerm), [])
 
     const onSendClick = () => {
-        if (!receiverAddress || !address || sendPermissions.length === 0)
+        if (!receiverAddress || !address)
         return
 
         const grantee = sendPermissions[0].grantee
