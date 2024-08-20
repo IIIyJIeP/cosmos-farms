@@ -13,7 +13,6 @@ import {
   sum,
   calcDollarValue,
   isGreaterThanZero,
-  type ParsedRewards as Rewards,
 } from '@/utils';
 import { MsgWithdrawDelegatorReward } from '@/src/codegen/cosmos/distribution/v1beta1/tx';
 import BigNumber from 'bignumber.js';
@@ -53,7 +52,7 @@ const BalancesOverview = ({
   
   const [isClaiming, setIsClaiming] = useState(false);
   const [isSendDetailsOpen, setIsSendDetailsOpen] = useState(false);
-  const { authzTx, createExecMsg } = useAuthzTx(chainName);
+  const { queueExecMsgsTx } = useAuthzTx(chainName);
   
   
   const claimPermissions = grants.map((grant) => grant.permissions.filter(
@@ -64,14 +63,16 @@ const BalancesOverview = ({
         (validator) => {
           return {
             validatorAddress: validator.validatorAddress,
+            amount: validator.amount,
             grantee: perm.grantee,
             granter: perm.granter,
-            expiration: perm.expiration
+            expiration: perm.expiration,
           }
         }
       ))
     .reduce((sum, cur) => sum.concat(cur), [])
-
+    .filter((permission) => Number(permission.amount) > 0)
+  
   const totalAmount = sum(totalAvailableBalance, totalStaked, totalRewards ?? 0);
   const coin = getCoin(chainName);
 
@@ -92,16 +93,17 @@ const BalancesOverview = ({
       claimPermissions[0].expiration
     )
 
-    authzTx({
-      msgs: [createExecMsg({ msgs, grantee: claimPermissions[0].grantee })],
+    queueExecMsgsTx({
+      msgs,
       execExpiration: expiration,
+      signMode: SignMode.DIRECT,
       onSuccess: () => {
         updateData();
       },
       onComplete: () => {
         setIsClaiming(false);
       },
-    }, SignMode.DIRECT);
+    })
   };
   
   return (

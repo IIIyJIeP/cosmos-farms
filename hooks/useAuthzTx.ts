@@ -151,6 +151,16 @@ type AuthzTxOptions = {
   execExpiration?: Date | undefined;
 };
 
+type QueueExecTxOptions = {
+  msgs: any[];
+  fee?: StdFee | null;
+  toast?: Partial<CustomToast>;
+  onSuccess?: () => void;
+  onComplete?: () => void;
+  execExpiration?: Date;
+  signMode?: SignMode;
+};
+
 export enum SignMode {
   AMINO = 'AMINO',
   DIRECT = 'DIRECT'
@@ -160,6 +170,60 @@ export const useAuthzTx = (chainName: string) => {
   const { toast } = useToast();
   const { address, getOfflineSignerAmino, getOfflineSignerDirect } = useChain(chainName);
   const {rpcEndpoint} = useQueryHooks(chainName)
+
+  const queueExecMsgsTx = async (options: QueueExecTxOptions) => {
+    const {
+      msgs,
+      fee,
+      onSuccess,
+      onComplete,
+      execExpiration,
+      toast: customToast,
+      signMode
+    } = options;
+
+    if (execExpiration && dayjs().isAfter(execExpiration)) {
+      toast({
+        type: 'error',
+        title: 'Permission Expired',
+      });
+      if (onComplete) onComplete();
+      return
+    }
+
+    if (!address) {
+      toast({
+        type: 'error',
+        title: 'Wallet not connected',
+        description: 'Please connect the wallet',
+      });
+      if (onComplete) onComplete();
+      return;
+    }
+
+    const queueMsgs = []
+    const size = 50
+    for (let i = 0; i < Math.ceil(msgs.length / size); i++) {
+      queueMsgs[i] = msgs.slice((i * size), (i * size) + size)
+    }
+
+    let isAtLeastOneSuccessful = false
+
+    while (queueMsgs.length > 0) {
+      await authzTx(
+        {
+          msgs: [createExecMsg({ msgs: queueMsgs.shift()!, grantee: address })],
+          execExpiration,
+          fee,
+          toast: customToast,
+          onSuccess: () => {isAtLeastOneSuccessful = true},
+        },
+        signMode
+      )
+    }
+    if (onSuccess && isAtLeastOneSuccessful) onSuccess();
+    if (onComplete) onComplete();
+  }
 
   const authzTx = async (options: AuthzTxOptions, signMode?: SignMode) => {
     const {
@@ -270,5 +334,5 @@ export const useAuthzTx = (chainName: string) => {
     if (onComplete) onComplete();
   };
 
-  return { authzTx, createGrantMsg, createRevokeMsg, createExecMsg };
+  return { authzTx, queueExecMsgsTx, createGrantMsg, createRevokeMsg, createExecMsg };
 };

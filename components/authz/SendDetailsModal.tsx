@@ -35,7 +35,7 @@ export const SendDetailsModal = ({ isOpen, onClose, chainName, grants, grantersB
     const defaultSendLimit = 0.1
     const [sendLimit, setSendLimit] = useState<number>(defaultSendLimit);
     const [isSending, setIsSending] = useState(false);
-    const { authzTx } = useAuthzTx(chainName);
+    const { queueExecMsgsTx } = useAuthzTx(chainName);
     const { toast } = useToast();
     const token = getTokenByChainName(chainName);
     const exponent = getExponent(chainName);
@@ -112,8 +112,8 @@ export const SendDetailsModal = ({ isOpen, onClose, chainName, grants, grantersB
             return
         }
 
-        authzTx({
-            msgs: [createExecMsg({ msgs, grantee })],
+        queueExecMsgsTx ({
+            msgs,
             execExpiration: expiration,
             onSuccess: () => {
                 updateBalances()
