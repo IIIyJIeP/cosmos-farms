@@ -1,6 +1,3 @@
-// TODO fix type issues
-// @ts-nocheck
-
 import { useState } from 'react';
 import {
   Box,
@@ -10,7 +7,7 @@ import {
 import { ChainName } from 'cosmos-kit';
 
 import { getCoin } from '@/configs';
-import { Prices, useAuthzTx } from '@/hooks';
+import { Prices, SignMode, useAuthzTx } from '@/hooks';
 import {
   sum,
   calcDollarValue,
@@ -66,7 +63,8 @@ const Overview = ({
       onComplete: () => {
         setIsClaiming(false);
       },
-    });
+    },
+    SignMode.DIRECT);
   };
 
   return (
