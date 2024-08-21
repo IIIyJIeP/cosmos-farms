@@ -9,6 +9,6 @@ export const rpcURLs:RpcUrls = {
     // celestia: 'https://rpc.cosmos.directory/celestia',
     celestia: 'https://celestia-rpc.polkachu.com',
     saga: 'https://saga-rpc.polkachu.com/',
-    dydx: 'https://dydx-rpc.polkachu.com/',
+    // dydx: 'https://dydx-rpc.polkachu.com/',
     // akash: 'https://akash-rpc.polkachu.com/',
 }
