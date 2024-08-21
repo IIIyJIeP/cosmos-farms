@@ -1,6 +1,3 @@
-// TODO fix type issues
-// @ts-nocheck
-
 import * as React from 'react';
 import { chains } from 'chain-registry';
 import {
@@ -11,6 +8,7 @@ import {
   Avatar,
   useTheme,
 } from '@interchain-ui/react';
+import { rpcURLs } from '@/configs';
 
 type Option = {
   label: string;
@@ -66,8 +64,9 @@ export const Chain = (props: ChooseChainProps) => {
   }, [chainInfos, chainName]);
 
   const chainOptions = chainInfos
+    .filter((chain) =>  !!rpcURLs[chain.chain_name])
     .map((chainInfo) => ({
-      iconUrl: chainInfo.logo_URIs?.png ?? '',
+      iconUrl: chainInfo.logo_URIs?.svg || chainInfo.logo_URIs?.png || '',
       label: chainInfo.pretty_name,
       value: chainInfo.chain_name,
     }))

@@ -32,8 +32,8 @@
     "@types/react-dom": "18.0.9"
   },
   "dependencies": {
-    "@chain-registry/client": "1.48.51",
-    "@chain-registry/types": "0.45.51",
+    "@chain-registry/client": "1.48.53",
+    "@chain-registry/types": "0.45.53",
     "@cosmjs/amino": "0.32.4",
     "@cosmjs/cosmwasm-stargate": "0.32.4",
     "@cosmjs/proto-signing": "0.32.4",
@@ -45,7 +45,7 @@
     "@interchain-ui/react-no-ssr": "0.1.8",
     "@tanstack/react-query": "4.32.0",
     "bignumber.js": "9.1.0",
-    "chain-registry": "1.63.61",
+    "chain-registry": "1.63.65",
     "cosmos-kit": "2.19.0",
     "dayjs": "1.11.10",
     "fast-fuzzy": "^1.12.0",

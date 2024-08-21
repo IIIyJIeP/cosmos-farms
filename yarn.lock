@@ -1511,7 +1511,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/client@npm:1.48.51, @chain-registry/client@npm:^1.48.1":
+"@chain-registry/client@npm:1.48.53":
+  version: 1.48.53
+  resolution: "@chain-registry/client@npm:1.48.53"
+  dependencies:
+    "@chain-registry/types": "npm:^0.45.53"
+    "@chain-registry/utils": "npm:^1.46.53"
+    bfs-path: "npm:^1.0.2"
+    cross-fetch: "npm:^3.1.5"
+  checksum: 10c0/0637c340baf06685c7ba8683b8121360a119180cf2c7ad0571e90d531d78791307be6f395188b68f1df55cd4675c6afac80a213dd8fb3c0145617e9f795cd402
+  languageName: node
+  linkType: hard
+
+"@chain-registry/client@npm:^1.48.1":
   version: 1.48.51
   resolution: "@chain-registry/client@npm:1.48.51"
   dependencies:
@@ -1576,7 +1588,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:0.45.51, @chain-registry/types@npm:^0.45.1, @chain-registry/types@npm:^0.45.51":
+"@chain-registry/types@npm:0.45.53, @chain-registry/types@npm:^0.45.53":
+  version: 0.45.53
+  resolution: "@chain-registry/types@npm:0.45.53"
+  checksum: 10c0/e3b1e4967c1302ea126735368c657b25b9b31a747812b1fe30c9741c6fdfe34c8a87c791db2e9033aad2a37af6c1b193044065904dedad9f15146c968ebd5e70
+  languageName: node
+  linkType: hard
+
+"@chain-registry/types@npm:^0.45.1, @chain-registry/types@npm:^0.45.51":
   version: 0.45.51
   resolution: "@chain-registry/types@npm:0.45.51"
   checksum: 10c0/efa5d6a2d0d74ee8e24f281684a45a9f919e6c6f45958bb2cf1253711c8724c2c457e9ae15397951fa84d3e063291f4831435b8361f80250644218cc9e7b06f6
@@ -1591,6 +1610,17 @@ __metadata:
     bignumber.js: "npm:9.1.2"
     sha.js: "npm:^2.4.11"
   checksum: 10c0/a3287d520054a201790f20e68516cffc71082804f2e2ffa7d2745556da719f5779e09fefbb14b5a6bf6093476fd52e9c5649f0d67f2099138d1fd6349804feec
+  languageName: node
+  linkType: hard
+
+"@chain-registry/utils@npm:^1.46.53":
+  version: 1.46.53
+  resolution: "@chain-registry/utils@npm:1.46.53"
+  dependencies:
+    "@chain-registry/types": "npm:^0.45.53"
+    bignumber.js: "npm:9.1.2"
+    sha.js: "npm:^2.4.11"
+  checksum: 10c0/bf8102c8b5aee92257e1dcc2b3bc18412df73869b21442a4b7c7c264eb9cc04bebc5771147faade19da0f44dbbcb655514b4819140a446701a45376186267d22
   languageName: node
   linkType: hard
 
@@ -8725,8 +8755,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cosmos-farms@workspace:."
   dependencies:
-    "@chain-registry/client": "npm:1.48.51"
-    "@chain-registry/types": "npm:0.45.51"
+    "@chain-registry/client": "npm:1.48.53"
+    "@chain-registry/types": "npm:0.45.53"
     "@confio/relayer": "npm:0.7.0"
     "@cosmjs/amino": "npm:0.32.4"
     "@cosmjs/cosmwasm-stargate": "npm:0.32.4"
