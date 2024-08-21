@@ -202,7 +202,7 @@ export const useAuthzTx = (chainName: string) => {
     }
 
     const queueMsgs = []
-    const size = 50
+    const size = 45
     for (let i = 0; i < Math.ceil(msgs.length / size); i++) {
       queueMsgs[i] = msgs.slice((i * size), (i * size) + size)
     }
