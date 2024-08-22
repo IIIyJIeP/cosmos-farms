@@ -8,7 +8,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <Container maxWidth="64rem" attributes={{ py: '$14' }}>
       <Head>
         <title>Cosmos Farms</title>
-        <meta name="description" content="Developed by the community" />
+        <meta name="description" content="Cosmosm Farms. Developed for Cosmos Farmers/" />
         <link rel="icon" href="/image/favicon.ico" />
       </Head>
        {/* @ts-ignore */}
