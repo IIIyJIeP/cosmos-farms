@@ -105,7 +105,7 @@ export const SendSection = ({ chainName }: SendSectionProps) => {
   }
 
   return (
-    <Box mt="$18" mb="$22" width="$containerSm" mx="auto">
+    <Box mt="$18" mb="$22" width={{tablet: "$containerSm"}} mx="auto">
       <Text fontSize="$2xl" fontWeight="$semibold" attributes={{ mb: '$12' }}>
         Send
       </Text>

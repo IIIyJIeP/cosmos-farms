@@ -170,7 +170,11 @@ export const GrantModal = ({ isOpen, onClose, chainName }: GrantModalProps) => {
         <Box>
           <FieldLabel htmlFor="" label="Permission" attributes={{ mb: '$4' }} />
 
-          <Box display="flex" flexDirection="column" gap="$6">
+          <Box 
+            display="flex" 
+            flexDirection="column" 
+            gap="$6"
+          >
             <Popover
               triggerType="click"
               isOpen={isDropdownOpen}
@@ -178,7 +182,6 @@ export const GrantModal = ({ isOpen, onClose, chainName }: GrantModalProps) => {
             >
               <PopoverTrigger>
                 <SelectButton
-                  className={styles.containerSm}
                   placeholder={selectedPermission?.name || 'Select permission'}
                   onClick={() => {}}
                 />

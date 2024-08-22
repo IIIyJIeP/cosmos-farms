@@ -20,7 +20,7 @@ export const LoginInfoBanner = ({
   return (
     <Box
       width="$fit"
-      height="$14"
+      height="fit-content"
       backgroundColor="$cardBg"
       borderRadius="$md"
       display="flex"
@@ -32,9 +32,9 @@ export const LoginInfoBanner = ({
     >
       <Icon name="errorWarningLine" size="$xl" />
       <Text>
-        You are now logged in as&nbsp;
+        You are now logged in as
         <Text as="span" fontWeight="$semibold">
-          {loginAddress}
+          {' ' + loginAddress}
         </Text>
       </Text>
     </Box>
