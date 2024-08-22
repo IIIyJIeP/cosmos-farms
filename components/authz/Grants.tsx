@@ -30,7 +30,7 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
     
     return (
       <>
-        <Stack direction='vertical'>
+        <Stack attributes={{width: {tablet:'$viewWidth'}}} direction='vertical'>
           {!isGranter && <Box>
             {isLoading || !data ? (
               <Box
@@ -52,7 +52,6 @@ export const Grants = ({ chainName, role }: GrantsProps) => {
           </Box>}
           <Box
             width="$full"
-            alignSelf="flex-start"
             display="grid"
             gridTemplateColumns={{ mobile: '1fr', tablet: '1fr 1fr' }}
             gap="$10"

@@ -76,14 +76,17 @@ export function Wallet({
   });
 
   return (
-    <Box py="$16">
+    <Box py="$10">
       <Stack
-        direction="vertical"
+        // direction="vertical"
         attributes={{
+          display: 'grid',
+          gridTemplateColumns: { mobile: '1fr', tablet: '3fr 2fr' },
           mx: 'auto',
           px: '$8',
-          py: '$8',
-          maxWidth: '35rem',
+          py: '$5',
+          width: 'fit-content',
+          // maxWidth: '32rem',
           borderRadius: '$lg',
           justifyContent: 'center',
           backgroundColor: useColorModeValue('$white', '$blackAlpha500'),
@@ -94,15 +97,14 @@ export function Wallet({
         }}
       >
 
-        <Stack
-          direction="horizontal"
-        >
+        
           <Box 
-            my="$2"
-            mx="auto"
-            maxWidth="16rem"
+            py={{mobile:'$3',tablet:'$2'}}
+            
+            px={{mobile: "auto", tablet: '$5'}}
+            width='$full'
+            maxWidth="18rem"
             justifyContent="center"
-            attributes={{ mb: '$12' }}
           >
             {isMultiChain ? (
               <Chain
@@ -118,17 +120,17 @@ export function Wallet({
             )}
           </Box>
           <Box
-            flex="1"
-            maxWidth="16rem"
-            display="flex"
-            height="$16"
+            px={{mobile: "auto", tablet: '$5', desktop: '$5'}}
+            py={{mobile:'$3',tablet:''}}
+            
+            display='flex'
+            width='$full'
             overflow="hidden"
-            justifyContent="center"
-            px={{ mobile: '$8', tablet: '$10' }}
+            justifyContent='center'
           >
             {ConnectButton}
           </Box>
-        </Stack>
+        
 
 
         {message &&

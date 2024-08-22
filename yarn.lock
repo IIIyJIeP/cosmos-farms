@@ -8319,12 +8319,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chain-registry@npm:1.63.61":
-  version: 1.63.61
-  resolution: "chain-registry@npm:1.63.61"
+"chain-registry@npm:1.63.65":
+  version: 1.63.65
+  resolution: "chain-registry@npm:1.63.65"
   dependencies:
-    "@chain-registry/types": "npm:^0.45.51"
-  checksum: 10c0/cd303d4dfc25a2dc1cf47698ee7743787eecf36d82888e973286a7b829f4f3fa154b03bfd37775e5402b3e13d2a29a39f4292348574ae89a7e1429ad4d11ed60
+    "@chain-registry/types": "npm:^0.45.53"
+  checksum: 10c0/a567d700ecb38ae2202253b16b67d1fb4fad61b37a1b4c4e5ae45bc3b4eeba5804bd8ce3c5bad1fdeeeae7509550f350c1e51ad9bc92e315b899c5c8b29a05c1
   languageName: node
   linkType: hard
 
@@ -8779,7 +8779,7 @@ __metadata:
     "@types/react": "npm:18.2.0"
     "@types/react-dom": "npm:18.2.0"
     bignumber.js: "npm:9.1.0"
-    chain-registry: "npm:1.63.61"
+    chain-registry: "npm:1.63.65"
     cosmos-kit: "npm:2.19.0"
     dayjs: "npm:1.11.10"
     eslint: "npm:8.28.0"

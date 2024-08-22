@@ -82,7 +82,7 @@ export const GrantCard = ({
       py="$11"
       backgroundColor="$cardBg"
       borderRadius="$lg"
-      width="$prose"
+      width='$full'
     >
       <Stack space="$4" attributes={{ alignItems: 'center', mb: '$10' }}>
         <Image
@@ -99,12 +99,15 @@ export const GrantCard = ({
       
       {!isGranter && <Balances balances={balances}/>}
 
-      <Box position="relative" mb="$10" width='$full'>
+      <Box 
+        position="relative" 
+        mb="$10" 
+        width='$full'
+      >
         <TextField
           id="address"
           label={isGranter ? 'Grantee' : 'Granter'}
           value={address}
-        // inputClassName={styles.customInput}
         />
         <Box position="absolute" bottom="$2" right="$2">
           <IconButton
