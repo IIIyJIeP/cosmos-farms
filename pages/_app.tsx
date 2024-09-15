@@ -1,6 +1,3 @@
-// TODO fix type issues
-// @ts-nocheck
-
 import '@interchain-ui/react/styles';
 import '@interchain-ui/react/globalStyles';
 import 'react-calendar/dist/Calendar.css';
@@ -8,7 +5,6 @@ import 'react-calendar/dist/Calendar.css';
 import React from 'react';
 import type { AppProps } from 'next/app';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { SignerOptions, wallets } from 'cosmos-kit';
 import { ChainProvider } from '@cosmos-kit/react';

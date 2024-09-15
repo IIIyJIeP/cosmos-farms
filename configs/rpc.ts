@@ -11,4 +11,5 @@ export const rpcURLs:RpcUrls = {
     saga: 'https://saga-rpc.polkachu.com/',
     // dydx: 'https://dydx-rpc.polkachu.com/',
     // akash: 'https://akash-rpc.polkachu.com/',
+    stargaze: 'https://stargaze-rpc.polkachu.com',
 }
