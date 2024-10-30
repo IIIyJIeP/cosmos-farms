@@ -121,7 +121,7 @@ export const Chain = (props: ChooseChainProps) => {
           <Combobox.Item key={option.value} textValue={option.label}>
             <ChainOption
               iconUrl={option.iconUrl ?? ''}
-              label={option.label}
+              label={option.label || ''}
               value={option.value}
             />
           </Combobox.Item>
