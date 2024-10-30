@@ -8,7 +8,7 @@ import {
 import { getChainAssets } from './chain';
 
 export function getChainLogo(chain: Chain) {
-  return chain.logo_URIs?.svg || chain.logo_URIs?.png || chain.logo_URIs?.jpeg;
+  return chain.logo_URIs?.svg || chain.logo_URIs?.png;
 }
 
 export function formatDate(date?: Date) {

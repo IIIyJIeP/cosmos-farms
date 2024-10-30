@@ -1588,17 +1588,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:0.45.53, @chain-registry/types@npm:^0.45.53":
-  version: 0.45.53
-  resolution: "@chain-registry/types@npm:0.45.53"
-  checksum: 10c0/e3b1e4967c1302ea126735368c657b25b9b31a747812b1fe30c9741c6fdfe34c8a87c791db2e9033aad2a37af6c1b193044065904dedad9f15146c968ebd5e70
-  languageName: node
-  linkType: hard
-
 "@chain-registry/types@npm:^0.45.1, @chain-registry/types@npm:^0.45.51":
   version: 0.45.51
   resolution: "@chain-registry/types@npm:0.45.51"
   checksum: 10c0/efa5d6a2d0d74ee8e24f281684a45a9f919e6c6f45958bb2cf1253711c8724c2c457e9ae15397951fa84d3e063291f4831435b8361f80250644218cc9e7b06f6
+  languageName: node
+  linkType: hard
+
+"@chain-registry/types@npm:^0.45.53":
+  version: 0.45.53
+  resolution: "@chain-registry/types@npm:0.45.53"
+  checksum: 10c0/e3b1e4967c1302ea126735368c657b25b9b31a747812b1fe30c9741c6fdfe34c8a87c791db2e9033aad2a37af6c1b193044065904dedad9f15146c968ebd5e70
   languageName: node
   linkType: hard
 
@@ -8763,7 +8763,7 @@ __metadata:
   resolution: "cosmos-farms@workspace:."
   dependencies:
     "@chain-registry/client": "npm:1.48.53"
-    "@chain-registry/types": "npm:0.45.53"
+    "@chain-registry/types": "npm:^0.50.3"
     "@confio/relayer": "npm:0.7.0"
     "@cosmjs/amino": "npm:0.32.4"
     "@cosmjs/cosmwasm-stargate": "npm:0.32.4"

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@chain-registry/client": "1.48.53",
-    "@chain-registry/types": "0.45.53",
+    "@chain-registry/types": "^0.50.3",
     "@cosmjs/amino": "0.32.4",
     "@cosmjs/cosmwasm-stargate": "0.32.4",
     "@cosmjs/proto-signing": "0.32.4",

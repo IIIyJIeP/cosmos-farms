@@ -74,7 +74,6 @@ const Overview = ({
           imgSrc={
             coin.logo_URIs?.png ||
             coin.logo_URIs?.svg ||
-            coin.logo_URIs?.jpeg ||
             ''
           }
           symbol={coin.symbol}
