@@ -39,6 +39,21 @@ export const useBalances = (chainName: string, addresses: string[]) => {
     ]
   }))
 
+  const dustBalancesQuerys = Object.fromEntries(addresses.map(address => {
+    return [
+      address,
+      cosmosQuery.bank.v1beta1.useAllBalances({
+        request: {
+          address,
+        },
+        options: {
+          enabled: isQueryHooksReady && !!address,
+          select: ({ balances }) => balances.filter((blnc) => blnc.denom !== coin.base),
+        },
+      }),
+    ]
+  }))
+
   const rewardsQuerys = Object.fromEntries(addresses.map(address => {
     return [
       address,
@@ -84,6 +99,7 @@ export const useBalances = (chainName: string, addresses: string[]) => {
       address,
       {
         balance: balanceQuerys[address],
+        dust: dustBalancesQuerys[address],
         rewards: rewardsQuerys[address],
         delegations: delegationsQuerys[address],
         prices: pricesQuery
@@ -103,6 +119,7 @@ export const useBalances = (chainName: string, addresses: string[]) => {
     queries.balance,
     queries.rewards,
     queries.delegations,
+    queries.dust,
   ]).reduce((result, current) => result.concat(current), [])
 
   const rawAllQueries = [...updatableQueriesAfterMutation, pricesQuery]

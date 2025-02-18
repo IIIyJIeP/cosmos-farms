@@ -8,16 +8,15 @@ import {
 import { ChainName } from 'cosmos-kit';
 
 import { getCoin } from '@/configs';
-import { AllBalancesData, GrantsType, SignMode, useAuthzTx } from '@/hooks';
+import { AllBalancesData, GrantsType } from '@/hooks';
 import {
   sum,
   calcDollarValue,
   isGreaterThanZero,
 } from '@/utils';
-import { MsgWithdrawDelegatorReward } from '@/src/codegen/cosmos/distribution/v1beta1/tx';
 import BigNumber from 'bignumber.js';
-import dayjs from 'dayjs';
 import { SendDetailsModal } from './SendDetailsModal';
+import { DustDetailsModal } from './DustDetailsModal';
 import { ClaimDetailsModal } from './ClaimDetailsModal';
 
 
@@ -52,8 +51,16 @@ const BalancesOverview = ({
   
   const prices = grantersBalances.prices
   
+  const isDustAvailable = Object.values(
+    grantersBalances.balancesData
+  ).reduce((bool, current) => 
+    bool = current.dust.length > 0 ? true : bool, false
+  )
+
   const [isClaimDetailsOpen, setIsClaimDetailsOpen] = useState(false);
   const [isSendDetailsOpen, setIsSendDetailsOpen] = useState(false);
+  const [isDustDetailsOpen, setIsDustDetailsOpen] = useState(false);
+  
   
   const totalAmount = sum(totalAvailableBalance, totalStaked, totalRewards ?? 0);
   const coin = getCoin(chainName);
@@ -65,11 +72,17 @@ const BalancesOverview = ({
   return (
     <>
       <Box
-        mb={{ mobile: '$8', tablet: '$12' }}
+        mb='$8'
         display="grid"
         gridTemplateColumns={{ mobile: '1fr', tablet: '4fr 1fr' }}
+        alignItems={'center'}
       >
         <StakingAssetHeader
+          borderWidth="1px"
+          borderColor={'Red'}
+          borderStyle= "solid"
+
+
           imgSrc={
             coin.logo_URIs?.png ||
             coin.logo_URIs?.svg ||
@@ -81,15 +94,33 @@ const BalancesOverview = ({
           available={Number(totalAvailableBalance) || 0}
           availablePrice={calcDollarValue(coin.base, totalAvailableBalance, prices)}
         />
-        <Button 
-          attributes={{mt: '$5'}} 
-          intent="tertiary" 
-          onClick={() => setIsSendDetailsOpen(true)} 
-          disabled={!isGreaterThanZero(totalAvailableBalance)}
-          isLoading={isSendDetailsOpen}
+        <Box
+          display='flex'
+          flexDirection={{mobile: 'row', tablet: 'column'}}
+          gap='$4'
+          alignItems={'stretch'}
+          flexGrow='2'
+          mt={{mobile: '$8', tablet: '$0'}}
         >
-          Send All
-        </Button>
+          <Button 
+            fluidWidth={true}
+            intent="tertiary" 
+            onClick={() => setIsSendDetailsOpen(true)} 
+            disabled={!isGreaterThanZero(totalAvailableBalance)}
+            isLoading={isSendDetailsOpen}
+          >
+            Send All
+          </Button>
+          {chainName === 'cosmoshub' && <Button 
+            fluidWidth={true}
+            intent="tertiary" 
+            onClick={() => setIsDustDetailsOpen(true)} 
+            disabled={!isDustAvailable}
+            isLoading={isDustDetailsOpen}
+          >
+            Collect Dust
+          </Button>}
+        </Box>
       </Box>
       <Box  
         mb={{ mobile: '$12', tablet: '$14' }}
@@ -108,6 +139,14 @@ const BalancesOverview = ({
       <SendDetailsModal
         isOpen={isSendDetailsOpen}
         onClose={() => setIsSendDetailsOpen(false)}
+        chainName={chainName}
+        grants={grants}
+        grantersBalances={grantersBalances}
+        updateBalances={updateData}
+      />
+      <DustDetailsModal
+        isOpen={isDustDetailsOpen}
+        onClose={() => setIsDustDetailsOpen(false)}
         chainName={chainName}
         grants={grants}
         grantersBalances={grantersBalances}

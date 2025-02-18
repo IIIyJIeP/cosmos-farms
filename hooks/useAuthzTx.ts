@@ -159,6 +159,7 @@ type QueueExecTxOptions = {
   onComplete?: () => void;
   execExpiration?: Date;
   signMode?: SignMode;
+  isHardware?: boolean;
 };
 
 export enum SignMode {
@@ -179,7 +180,8 @@ export const useAuthzTx = (chainName: string) => {
       onComplete,
       execExpiration,
       toast: customToast,
-      signMode
+      signMode,
+      isHardware
     } = options;
 
     if (execExpiration && dayjs().isAfter(execExpiration)) {
@@ -202,7 +204,7 @@ export const useAuthzTx = (chainName: string) => {
     }
 
     const queueMsgs = []
-    const size = 45
+    const size = isHardware ? 7 : 45
     for (let i = 0; i < Math.ceil(msgs.length / size); i++) {
       queueMsgs[i] = msgs.slice((i * size), (i * size) + size)
     }
