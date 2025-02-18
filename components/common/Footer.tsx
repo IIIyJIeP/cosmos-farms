@@ -163,10 +163,10 @@ export function Footer() {
         <Link href="https://github.com/IIIyJIeP/" target="_blank">
           IIIyJIeP
         </Link>
-        <Text>for</Text>
-        <Link href="https://t.me/Crypto_Base_Chat/" target="_blank">
+        <Text>for Community</Text>
+        {/* <Link href="https://t.me/Crypto_Base_Chat/" target="_blank">
           Community
-        </Link>
+        </Link> */}
       </Stack>
     </>
   );

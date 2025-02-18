@@ -17,4 +17,14 @@ export const dependencies: Project[] = [
     desc: 'The best crypto community.',
     link: 'https://t.me/Crypto_Base_Chat',
   },
+  {
+    name: 'X CocmosNibble`s',
+    desc: 'CosmoNibble is an educational community that helps crypto enthusiasts navigate the interchain',
+    link: 'https://x.com/CosmosNibble',
+  },
+  {
+    name: 'CocmoNibble Chat',
+    desc: 'Telegram chat of the CocmosNibble`s community',
+    link: 'https://t.me/cosmonibble',
+  },
 ];
